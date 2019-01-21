@@ -1,5 +1,5 @@
 import {ADD_PLACE, DELETE_PLACE, SELECT_PLACE, UNSELECT_PLACE} from '../actions/actionTypes'
-import placeImage from './src/assets/bled.jpg';
+import placeImage from '../../../src/assets/bled.jpg';
 
 const initalState = {
     places: [],
