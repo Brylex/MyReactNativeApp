@@ -1,56 +1,35 @@
-import React, {Component} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {connect} from 'react-redux';
+import {Navigation} from 'react-native-navigation';
 
-import PlaceList from './src/components/PlaceList/PlaceList';
-import ListInput from "./src/components/ListInput/ListInput";
-import PlaceDetail from "./src/components/PlaceDetail/PlaceDetail";
-import {addPlace, deletePlace, selectPlace, unselectPlace} from './src/store/actions/index'
+import AuthScreen from './src/screens/Auth/Auth'
+import SharePlace from './src/screens/SharePlace/SharePlace';
+import FindPlace from './src/screens/FindPlace/FindPlace';
 
-class App extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <PlaceDetail 
-          selectedPlace={this.props.selectedPlace} 
-          onItemDeleted={this.props.onDeletePlace}
-          onModalClosed={this.props.onUnselectPlace} />
-        <ListInput placeAddHandler={(placeName => this.props.onAddPlace(placeName))} />
-        <PlaceList 
-          places={this.props.places} 
-          onItemSelected={(key) => this.props.onSelectPlace(key)}/>
-      </View>
-    );
-  };
-}
+//Register Screens
+Navigation.registerComponent("myReactNativeApp.AuthScreen", () => AuthScreen);
+Navigation.registerComponent("myReactNativeApp.SharePlaceScreen", () => SharePlace);
+Navigation.registerComponent("myReactNativeApp.FindPlaceScreen", () => FindPlace);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-    padding: 10,
-  },
-});
-
-const mapStateToProps = state => {
-  return {
-    places: state.places.places,
-    selectedPlace: state.places.selectedPlace,
+//Start App
+Navigation.setRoot({
+  root: {
+    stack: {
+      options: {},
+      children: [
+        {
+          component: {
+            name: 'myReactNativeApp.AuthScreen',
+            options: {
+              topBar: {
+                title: {
+                  text: 'Login',
+                  fontSize: 20,
+                }
+              }
+            },
+          }
+        }
+      ],
+      options: {}
+    }
   }
-}
-
-const mapDisptchToProps = dispatch => {
-  return {
-    onAddPlace: (name) => dispatch(addPlace(name)),
-    onDeletePlace: () => dispatch(deletePlace()),
-    onSelectPlace: (key) => dispatch(selectPlace(key)),
-    onUnselectPlace: () => dispatch(unselectPlace()),
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDisptchToProps
-)(App);
+})
