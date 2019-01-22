@@ -9,7 +9,6 @@ const initalState = {
 const reducer = (state = initalState, action) => {
     switch (action.type) {
         case ADD_PLACE: {
-            console.log("Adding " + action.placeName);
             return {
                 ...state,
                 places: state.places.concat({
