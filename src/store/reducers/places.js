@@ -1,4 +1,4 @@
-import {ADD_PLACE, DELETE_PLACE, SELECT_PLACE, UNSELECT_PLACE} from '../actions/actionTypes'
+import {ADD_PLACE, DELETE_PLACE} from '../actions/actionTypes'
 import placeImage from '../../../src/assets/bled.jpg';
 
 const initalState = {
@@ -22,18 +22,6 @@ const reducer = (state = initalState, action) => {
             return {
                 ...state,
                 places: state.places.filter((place) => place.key !== state.selectedPlace.key),
-                selectedPlace: null,
-            }
-        }
-        case SELECT_PLACE: {
-            return {
-                ...state,
-                selectedPlace: state.places.find(place => place.key === action.placeKey)
-            }
-        }
-        case UNSELECT_PLACE: {
-            return {
-                ...state,
                 selectedPlace: null,
             }
         }
