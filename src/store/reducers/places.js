@@ -2,8 +2,7 @@ import {ADD_PLACE, DELETE_PLACE} from '../actions/actionTypes'
 import placeImage from '../../../src/assets/bled.jpg';
 
 const initalState = {
-    places: [],
-    selectedPlace : null,
+    places: []
 };
 
 const reducer = (state = initalState, action) => {
@@ -21,8 +20,7 @@ const reducer = (state = initalState, action) => {
         case DELETE_PLACE: {
             return {
                 ...state,
-                places: state.places.filter((place) => place.key !== state.selectedPlace.key),
-                selectedPlace: null,
+                places: state.places.filter((place) => place.key !== action.placeKey)
             }
         }
         default:

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, StyleSheet, TextInput, View} from 'react-native';
 
-export default class ListInput extends Component {
+export default class PlaceInput extends Component {
     state = {
         placeName: ""
     };
