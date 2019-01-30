@@ -1,6 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SideMenuItem = props => (
     <TouchableOpacity onPress={props.onPress}>

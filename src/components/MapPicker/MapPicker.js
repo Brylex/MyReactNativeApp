@@ -9,7 +9,7 @@ class MapPicker extends Component {
                     <Text>Map</Text>
                 </View>
                 <View style={styles.button}>
-                    <Button title="Locate me!" />
+                    <Button title="Locate me!" onPress={this.props.onPress}/>
                 </View>
             </View>
         )

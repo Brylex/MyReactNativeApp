@@ -62,9 +62,9 @@ class SharePlace extends Component {
                     <MainText>
                         <Header style={styles.header}>Share a place</Header>
                     </MainText>
-                    <ImagePicker />
-                    <MapPicker />
                     <PlaceInput placeName={this.state.placeName} onChangeText={this.placeNameChangeHandler} />
+                    <ImagePicker onPress={() => alert("Pick image")}/>
+                    <MapPicker onPress={() => alert("Pick place")}/>
                     <View style={styles.button}>
                         <Button title="Share the place!" onPress={this.placeSubmitHandler}/>
                     </View>

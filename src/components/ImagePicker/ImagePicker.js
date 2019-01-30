@@ -11,7 +11,7 @@ class ImagePicker extends Component {
                     <Image source={imagePlaceholder} style={styles.previewImage}/>
                 </View>
                 <View style={styles.button}>
-                    <Button title="Pick image" />
+                    <Button title="Pick image" onPress={this.props.onPress}/>
                 </View>
             </View>
         )

@@ -1,11 +1,12 @@
 import {Navigation} from 'react-native-navigation';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Platform} from 'react-native';
 
 const startTabs = () => {
     Promise.all([
-        Icon.getImageSource("share-square", 30),
-        Icon.getImageSource("map", 30),
-        Icon.getImageSource("bars", 30),
+        Icon.getImageSource(Platform.OS === 'android' ? "md-map" : "ios-map", 30),
+        Icon.getImageSource(Platform.OS === 'android' ? "md-share-alt" : "ios-share", 30),
+        Icon.getImageSource(Platform.OS === 'android' ? "md-menu" : "ios-menu", 30),
     ]).then(sources => {
         Navigation.setRoot({
             root: {
@@ -18,33 +19,7 @@ const startTabs = () => {
                     },
                     center: {
                         bottomTabs: {
-                            children: [{ 
-                                    stack: { 
-                                        children: [{
-                                            component: {
-                                                name: 'myReactNativeApp.SharePlaceScreen',
-                                                options: {
-                                                    bottomTab: {
-                                                        text: 'Share Place',
-                                                        fontSize: 12,
-                                                        icon: sources[0]
-                                                    },
-                                                    topBar: {
-                                                        title: {
-                                                            text: 'Share Place',
-                                                            fontSize: 20,
-                                                        },
-                                                        leftButtons: [{
-                                                            id: "drawer-button",
-                                                            icon: sources[2],
-                                                            text: "Menu"
-                                                        }]
-                                                    },
-                                                }
-                                            }
-                                        }]
-                                    }
-                                },{
+                            children: [{
                                     stack: { 
                                         children: [{
                                             component: {
@@ -54,6 +29,8 @@ const startTabs = () => {
                                                         text: 'Find Place',
                                                         fontSize: 12,
                                                         icon: sources[1],
+                                                        selectedIconColor: "orange",
+                                                        selectedTextColor: "orange",
                                                     },
                                                     topBar: {
                                                         title: {
@@ -63,15 +40,56 @@ const startTabs = () => {
                                                         leftButtons: [{
                                                             id: "drawer-button",
                                                             icon: sources[2],
-                                                            text: "Menu"
+                                                            text: "Menu",
+                                                            color: "#2196F3",
                                                         }]
                                                     }
                                                 }
                                             }
-                                        }]
+                                        }],
+                                        options: {
+                                            bottomTab: {
+                                                selectedIconColor: "#2196F3",
+                                                selectedTextColor: "#2196F3",
+                                            }
+                                        }
+                                    }
+                                },{ 
+                                    stack: {
+                                        children: [{
+                                            component: {
+                                                name: 'myReactNativeApp.SharePlaceScreen',
+                                                options: {
+                                                    bottomTab: {
+                                                        text: 'Share Place',
+                                                        fontSize: 12,
+                                                        icon: sources[0],
+
+                                                    },
+                                                    topBar: {
+                                                        title: {
+                                                            text: 'Share Place',
+                                                            fontSize: 20,
+                                                        },
+                                                        leftButtons: [{
+                                                            id: "drawer-button",
+                                                            icon: sources[2],
+                                                            text: "Menu",
+                                                            color: "orange",
+                                                        }]
+                                                    },
+                                                }
+                                            }
+                                        }],
+                                        options: {
+                                            bottomTab: {
+                                                selectedIconColor: "#2196F3",
+                                                selectedTextColor: "#2196F3",
+                                            }
+                                        }
                                     }
                                 }
-                            ]
+                            ],
                         }
                     }
                 }
