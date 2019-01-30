@@ -38,21 +38,18 @@ Navigation.registerComponent("myReactNativeApp.SideDrawerScreen", () => SideDraw
 Navigation.setRoot({
   root: {
     stack: {
-      children: [
-        {
+      children: [{
           component: {
             name: 'myReactNativeApp.AuthScreen',
-            options: {
+            options:{
               topBar: {
-                title: {
-                  text: 'Login',
-                  fontSize: 20,
-                }
+                visible: false,
+                drawBehind: true,
+                animate: false,
               }
-            },
+            }
           }
-        }
-      ],
+      }],
     }
   }
 })

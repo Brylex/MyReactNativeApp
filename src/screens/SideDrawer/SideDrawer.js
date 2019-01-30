@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet} from 'react-native';
+
+import SideMenuItem from '../../components/UI/SideMenuItem/SideMenuItem';
 
 class SideDrawer extends Component {
     render() {
         return (
-            <View style={style.container}>
-                <Text>SideDrawer</Text>
+            <View style={styles.container}>
+                <SideMenuItem onPress={() => alert("Loggin out")} iconName="sign-out-alt">
+                    Log out
+                </SideMenuItem>
             </View>
         );
     }
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         paddingTop: 22,
         backgroundColor: "white",
         flex: 1,
-    }
+    },
 });
 
 export default SideDrawer;
