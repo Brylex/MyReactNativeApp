@@ -1,13 +1,47 @@
 import React, {Component} from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Button, StyleSheet, Dimensions} from 'react-native';
+import MapView from 'react-native-maps';
 
 class MapPicker extends Component {
+    state = {
+        location: {
+            latitude: 51.2472703,
+            longitude: 22.5667477,
+            latitudeDelta: 0.0122,
+            longitudeDelta: Dimensions.get('window').width / Dimensions.get('window').height * 0.0122,
+        },
+        showLocationMarker: false,
+    }
+
+    pickLocationHandler = event => {
+        const newLocation = event.nativeEvent.coordinate;
+        this.setState(prevState => {
+            return {
+                location: {
+                    ...prevState.location,
+                    latitude: newLocation.latitude,
+                    longitude: newLocation.longitude,
+                },
+                showLocationMarker: true,
+            }
+        });
+    }
+
     render() {
+        const marker = this.state.showLocationMarker
+            ? <MapView.Marker coordinate={this.state.location} />
+            : null;
+
         return (
             <View style={styles.container}>
-                <View style={styles.placeholder}>
-                    <Text>Map</Text>
-                </View>
+                <MapView 
+                    onPress={this.pickLocationHandler}
+                    initialRegion={this.state.location}
+                    region={this.state.location}
+                    style={styles.map}
+                >
+                    {marker}
+                </MapView>
                 <View style={styles.button}>
                     <Button title="Locate me!" onPress={this.props.onPress}/>
                 </View>
@@ -21,12 +55,9 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: "center",
     },
-    placeholder: {
-        borderWidth: 1,
-        borderColor: "black",
-        backgroundColor: "#eee",
-        width: "80%",
-        height: 150,
+    map: {
+        width: "100%",
+        height: 250,
     },
     button: {
         margin: 8,
