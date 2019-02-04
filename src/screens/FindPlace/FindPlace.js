@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Text } from 'react-native'
+import { View, StyleSheet, Animated, TouchableOpacity, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation'
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import ButtonWithBackground from '../../components/UI/ButtonWithBackground/ButtonWithBackground'
 import PlaceList from '../../components/PlaceList/PlaceList';
 
 class FindPlace extends Component {
@@ -44,20 +44,30 @@ class FindPlace extends Component {
     itemSelectedHandler = (key) => {
         const selectedPlace = this.props.places.find(place => place.key === key);
 
-        Navigation.push(this.props.componentId, {
-            component: {
-                name: "myReactNativeApp.PlaceDetailsScreen",
-                passProps: {
-                    selectedPlace: selectedPlace
-                },
-                options: {
-                    topBar: {
-                        title: {
-                            text: selectedPlace.name,
+        Promise.all([
+            Icon.getImageSource(Platform.OS === 'android' ? "md-trash" : "ios-trash", 30),
+        ]).then(sources => {
+            Navigation.push(this.props.componentId, {
+                component: {
+                    name: "myReactNativeApp.PlaceDetailsScreen",
+                    passProps: {
+                        selectedPlace: selectedPlace
+                    },
+                    options: {
+                        topBar: {
+                            title: {
+                                text: selectedPlace.name,
+                            },
+                            rightButtons: [{
+                                id: "delete-location-btn",
+                                icon: sources[0],
+                                text: "Delete",
+                                color: "red",
+                            }]
                         }
                     }
                 }
-            }
+            })
         })
     }
 
@@ -87,7 +97,6 @@ class FindPlace extends Component {
                             <Text style={styles.text}>Load places</Text>
                         </View>
                     </TouchableOpacity>
-                    {/* <ButtonWithBackground color="#2196F3" onPress={this.placesSearchHandler}>Load places</ButtonWithBackground> */}
                 </Animated.View>
             )
             : (<PlaceList places={this.props.places} onItemSelected={this.itemSelectedHandler}/>)
