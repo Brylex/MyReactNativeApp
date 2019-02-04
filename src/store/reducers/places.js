@@ -13,7 +13,7 @@ const reducer = (state = initalState, action) => {
                 places: state.places.concat({
                     key: Math.random(), 
                     name: action.placeName,
-                    image: placeImage,
+                    image: action.image,
                     location: action.location,
                 })
             }

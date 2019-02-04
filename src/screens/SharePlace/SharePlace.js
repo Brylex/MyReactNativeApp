@@ -5,7 +5,7 @@ import { Navigation } from 'react-native-navigation';
 
 import { addPlace } from '../../store/actions/index';
 import PlaceInput from '../../components/PlaceInput/PlaceInput';
-import ImagePicker from '../../components/ImagePicker/ImagePicker';
+import ImageSelector from '../../components/ImageSelector/ImageSelector';
 import MapPicker from '../../components/MapPicker/MapPicker';
 import MainText from '../../components/UI/MainText/MainText';
 import Header from '../../components/UI/Header/Header';
@@ -25,6 +25,10 @@ class SharePlace extends Component {
                     }
                 },
                 location: {
+                    value: null,
+                    valid: false,
+                },
+                image: {
                     value: null,
                     valid: false,
                 }
@@ -89,8 +93,26 @@ class SharePlace extends Component {
         })
     }
 
+    imagePickedHandler = image => {
+        this.setState(prevState => {
+            return {
+                controls: {
+                    ...prevState.controls,
+                    image: {
+                        value: image,
+                        valid: true,
+                    }
+                }
+            }
+        })
+    }
+
     placeSubmitHandler = () => {
-        this.props.onAddPlace(this.state.controls.placeName.value, this.state.controls.location.value);
+        this.props.onAddPlace(
+            this.state.controls.placeName.value, 
+            this.state.controls.location.value,
+            this.state.controls.image.value,
+        );
     };
 
     render() {
@@ -105,13 +127,15 @@ class SharePlace extends Component {
                         value={this.state.controls.placeName.value}
                         valid={this.state.controls.placeName.valid}
                         touched={this.state.controls.placeName.touched} />
-                    <ImagePicker onPress={() => alert("Pick image")}/>
+                    <ImageSelector onImagePicked={this.imagePickedHandler} />
                     <MapPicker onLocationSelected={this.locationSelectedHandler}/>
                     <View style={styles.button}>
                         <Button 
                             title="Share the place!" 
                             onPress={this.placeSubmitHandler}
-                            disabled={!this.state.controls.placeName.valid || !this.state.controls.location.valid} />
+                            disabled={!this.state.controls.placeName.valid 
+                                || !this.state.controls.location.valid
+                                || !this.state.controls.image.valid} />
                     </View>
                 </View>
             </ScrollView>
@@ -121,7 +145,7 @@ class SharePlace extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddPlace: (placeName, location) => dispatch(addPlace(placeName, location))
+        onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image))
     }
 }
 
