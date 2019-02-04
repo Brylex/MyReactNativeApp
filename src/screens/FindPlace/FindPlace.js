@@ -67,7 +67,7 @@ class FindPlace extends Component {
             duration: 500,
             useNativeDriver: true,
         }).start();
-        //this.setState({loaded: true});
+        this.setState({loaded: true})
     }
 
     render() {

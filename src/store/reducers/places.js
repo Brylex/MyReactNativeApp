@@ -14,6 +14,7 @@ const reducer = (state = initalState, action) => {
                     key: Math.random(), 
                     name: action.placeName,
                     image: placeImage,
+                    location: action.location,
                 })
             }
         }

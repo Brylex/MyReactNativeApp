@@ -15,6 +15,12 @@ class MapPicker extends Component {
 
     pickLocationHandler = event => {
         const newLocation = event.nativeEvent.coordinate;
+        this.map.animateToRegion({
+            ...this.state.location,
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+        })
+
         this.setState(prevState => {
             return {
                 location: {
@@ -25,6 +31,32 @@ class MapPicker extends Component {
                 showLocationMarker: true,
             }
         });
+
+        this.props.onLocationSelected({
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+        })
+    }
+
+    getLocationhandler = () => {
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const coordinatesEvent = {
+                    nativeEvent: {
+                        coordinate: {
+                            latitude: pos.coords.latitude,
+                            longitude: pos.coords.longitude,
+                        }
+                    }
+                };
+
+                this.pickLocationHandler(coordinatesEvent);
+            },
+            err => {
+                console.log(err);
+                alert("Fetching positions failed. Select your position manually.")
+            }
+        );
     }
 
     render() {
@@ -37,13 +69,13 @@ class MapPicker extends Component {
                 <MapView 
                     onPress={this.pickLocationHandler}
                     initialRegion={this.state.location}
-                    region={this.state.location}
                     style={styles.map}
+                    ref={ref => this.map = ref}
                 >
                     {marker}
                 </MapView>
                 <View style={styles.button}>
-                    <Button title="Locate me!" onPress={this.props.onPress}/>
+                    <Button title="Locate me!" onPress={this.getLocationhandler}/>
                 </View>
             </View>
         )

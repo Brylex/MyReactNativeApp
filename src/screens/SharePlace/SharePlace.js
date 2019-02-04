@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ScrollView, View, Text, Button, StyleSheet, Image } from 'react-native'
+import { ScrollView, View, Button, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation';
 
@@ -9,12 +9,26 @@ import ImagePicker from '../../components/ImagePicker/ImagePicker';
 import MapPicker from '../../components/MapPicker/MapPicker';
 import MainText from '../../components/UI/MainText/MainText';
 import Header from '../../components/UI/Header/Header';
+import validate from '../../utility/validation';
 
 class SharePlace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            placeName: "",
+            controls: {
+                placeName: {
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                        notEmpty: true,
+                    }
+                },
+                location: {
+                    value: null,
+                    valid: false,
+                }
+            }
         }
 
         Navigation.events().registerNavigationButtonPressedListener(this.onNavigationButtonPressed);
@@ -45,14 +59,38 @@ class SharePlace extends Component {
         }
     }
 
-    placeNameChangeHandler = (text) => {
-        this.setState({placeName: text});
+    placeNameChangeHandler = (val) => {
+        this.setState(prevState => {
+            return {
+                controls: {
+                    ...prevState.controls,
+                    placeName:  {
+                        ...prevState.controls.placeName,
+                        value: val,
+                        valid: validate(val, prevState.controls.placeName.validationRules, null),
+                        touched: true,
+                    }
+                }
+            }
+        });
     };
 
+    locationSelectedHandler = location => {
+        this.setState(prevState => {
+            return {
+                controls: {
+                    ...prevState.controls,
+                    location: {
+                        value: location,
+                        valid: true,
+                    }
+                }
+            }
+        })
+    }
+
     placeSubmitHandler = () => {
-        if (this.state.placeName.trim() !== "") {
-            this.props.onAddPlace(this.state.placeName);
-        }
+        this.props.onAddPlace(this.state.controls.placeName.value, this.state.controls.location.value);
     };
 
     render() {
@@ -62,11 +100,18 @@ class SharePlace extends Component {
                     <MainText>
                         <Header style={styles.header}>Share a place</Header>
                     </MainText>
-                    <PlaceInput placeName={this.state.placeName} onChangeText={this.placeNameChangeHandler} />
+                    <PlaceInput 
+                        onChangeText={this.placeNameChangeHandler}
+                        value={this.state.controls.placeName.value}
+                        valid={this.state.controls.placeName.valid}
+                        touched={this.state.controls.placeName.touched} />
                     <ImagePicker onPress={() => alert("Pick image")}/>
-                    <MapPicker onPress={() => alert("Pick place")}/>
+                    <MapPicker onLocationSelected={this.locationSelectedHandler}/>
                     <View style={styles.button}>
-                        <Button title="Share the place!" onPress={this.placeSubmitHandler}/>
+                        <Button 
+                            title="Share the place!" 
+                            onPress={this.placeSubmitHandler}
+                            disabled={!this.state.controls.placeName.valid || !this.state.controls.location.valid} />
                     </View>
                 </View>
             </ScrollView>
@@ -76,7 +121,7 @@ class SharePlace extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddPlace: (placeName) => dispatch(addPlace(placeName))
+        onAddPlace: (placeName, location) => dispatch(addPlace(placeName, location))
     }
 }
 
