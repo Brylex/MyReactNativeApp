@@ -1,21 +1,20 @@
 import {SET_PLACES, ADD_PLACE, DELETE_PLACE} from './actionTypes';
 import {uiStartLoading, uiStopLoading} from './ui';
+import {authGetToken} from './index';
 
 export const addPlace = (placeName, location, image) => {
     return dispatch => {
-        let uploadedImage = null;
-
         dispatch(uiStartLoading());
-        fetch("https://us-central1-myreactnativeapp-1548941530901.cloudfunctions.net/storeImage", {
-            method: 'POST',
-            body: JSON.stringify({
-                image: image.base64
+        dispatch(authGetToken())
+        .then(token => {
+            return fetch("https://us-central1-myreactnativeapp-1548941530901.cloudfunctions.net/storeImage", {
+                method: 'POST',
+                body: JSON.stringify({
+                    image: image.base64
+                })
             })
-        })
-        .catch(err => {
-            console.log(err);
-            dispatch(uiStopLoading());            
-        })
+        })        
+        .catch(() => alert("No valid token found in store."))
         .then(response => response.json())
         .then(parsedResponse => {
             uploadedImage = {
@@ -48,13 +47,20 @@ export const addPlace = (placeName, location, image) => {
                 image: uploadedImage
             });     
         })
+        .catch(err => {
+            console.log(err);
+            dispatch(uiStopLoading());            
+        });
     }
 };
 
 export const getPlaces = () => {
     return dispatch => {
-        fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places.json")
-        .catch(err => console.log(err))
+        dispatch(authGetToken())
+        .then(token => {
+            return fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places.json?auth=" + token)
+        })
+        .catch(() => alert("No valid token found in store."))
         .then(response => response.json())
         .then(places => {
             const mappedPlaces = [];
@@ -68,16 +74,20 @@ export const getPlaces = () => {
                 })
             }
             dispatch(setPlaces(mappedPlaces))
-        });
+        })
+        .catch(err => console.log(err));
     }
 }
 
 export const deletePlace = id => {
     return dispatch => {
-        fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places/" + id + ".json", {
-            method: "DELETE",
+        dispatch(authGetToken())
+        .then(token => {
+            return fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places/" + id + ".json?auth=" + token, {
+                method: "DELETE",
+            })
         })
-        .catch(err => console.log(err))
+        .catch(() => alert("No valid token found in store."))
         .then(response => {
             if (response.status === 200) {
                 dispatch({
@@ -87,7 +97,8 @@ export const deletePlace = id => {
             } else {
                 console.log("Failed to delete record. Id: " + id);
             }
-        });
+        })
+        .catch(err => console.log(err));
     }
 }
 

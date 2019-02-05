@@ -9,10 +9,12 @@ const PlaceList = (props) => {
             data={props.places}
             renderItem={(info) => (
                 <ListItem 
+                    key={info.item.id}
                     placeName={info.item.placeName}
                     placeImage={info.item.image}
                     onItemPressed={() => props.onItemSelected(info.item.id)} />
             )} 
+            keyExtractor={(item, index) => item.id}
         />
     );
 };
