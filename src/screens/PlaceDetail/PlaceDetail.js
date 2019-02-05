@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {View, Image, Text, StyleSheet, Dimensions} from 'react-native';
-import { connect } from 'react-redux';
-import { Navigation } from 'react-native-navigation';
+import {connect} from 'react-redux';
+import {Navigation} from 'react-native-navigation';
 import MapView from 'react-native-maps';
 
 import { deletePlace } from '../../store/actions/index'
@@ -31,7 +31,7 @@ class PlaceDetail extends Component {
         return (
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.placeName}>{this.props.selectedPlace.name}</Text>
+                    <Text style={styles.placeName}>{this.props.selectedPlace.placeName}</Text>
                     <Image style={styles.placeImage} source={this.props.selectedPlace.image} />
                     <MapView style={styles.map} initialRegion={location}>
                         <MapView.Marker coordinate={location} />

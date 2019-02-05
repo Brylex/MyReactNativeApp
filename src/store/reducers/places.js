@@ -1,5 +1,4 @@
-import {ADD_PLACE, DELETE_PLACE} from '../actions/actionTypes'
-import placeImage from '../../../src/assets/bled.jpg';
+import {SET_PLACES, DELETE_PLACE, ADD_PLACE} from '../actions/actionTypes';
 
 const initalState = {
     places: []
@@ -7,12 +6,18 @@ const initalState = {
 
 const reducer = (state = initalState, action) => {
     switch (action.type) {
+        case SET_PLACES: {
+            return {
+                ...state,
+                places: action.places
+            }
+        }
         case ADD_PLACE: {
             return {
                 ...state,
                 places: state.places.concat({
-                    key: Math.random(), 
-                    name: action.placeName,
+                    id: action.id,
+                    placeName: action.placeName,
                     image: action.image,
                     location: action.location,
                 })

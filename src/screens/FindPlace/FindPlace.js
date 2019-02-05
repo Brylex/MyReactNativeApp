@@ -5,6 +5,7 @@ import { Navigation } from 'react-native-navigation'
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import PlaceList from '../../components/PlaceList/PlaceList';
+import { getPlaces } from '../../store/actions/index';
 
 class FindPlace extends Component {
     constructor(props) {
@@ -15,6 +16,10 @@ class FindPlace extends Component {
 
         Navigation.events().registerNavigationButtonPressedListener(this.navigationButtonPressed);
         Navigation.events().registerComponentDidDisappearListener(this.onSideMenuClosed);
+    }
+
+    componentDidMount() {
+        this.props.getPlaces();
     }
 
     navigationButtonPressed = event => {
@@ -41,8 +46,8 @@ class FindPlace extends Component {
         }
     }
 
-    itemSelectedHandler = (key) => {
-        const selectedPlace = this.props.places.find(place => place.key === key);
+    itemSelectedHandler = (id) => {
+        const selectedPlace = this.props.places.find(place => place.id === id);
 
         Promise.all([
             Icon.getImageSource(Platform.OS === 'android' ? "md-trash" : "ios-trash", 30),
@@ -134,6 +139,13 @@ const mapStateToProps = state => {
     }
 }
 
+const mapDispathcToProps = dispatch => {
+    return {
+        getPlaces: () => dispatch(getPlaces()),
+    }
+}
+
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispathcToProps
 )(FindPlace)

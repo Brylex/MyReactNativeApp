@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ScrollView, View, Button, StyleSheet } from 'react-native'
+import { ScrollView, View, Button, StyleSheet, ActivityIndicator, Text } from 'react-native'
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation';
 
@@ -116,6 +116,19 @@ class SharePlace extends Component {
     };
 
     render() {
+        const submitBtn = !this.props.isLoading
+            ? <Button 
+                title="Share the place!"
+                onPress={this.placeSubmitHandler}
+                disabled={!this.state.controls.placeName.valid 
+                    || !this.state.controls.location.valid
+                    || !this.state.controls.image.valid
+                    || this.props.isLoading} />
+            : <View style={styles.progress}>
+                <Text>Uploading...</Text>
+                <ActivityIndicator />
+              </View>
+
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -130,12 +143,7 @@ class SharePlace extends Component {
                     <ImageSelector onImagePicked={this.imagePickedHandler} />
                     <MapPicker onLocationSelected={this.locationSelectedHandler}/>
                     <View style={styles.button}>
-                        <Button 
-                            title="Share the place!" 
-                            onPress={this.placeSubmitHandler}
-                            disabled={!this.state.controls.placeName.valid 
-                                || !this.state.controls.location.valid
-                                || !this.state.controls.image.valid} />
+                        {submitBtn}
                     </View>
                 </View>
             </ScrollView>
@@ -149,6 +157,12 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        isLoading: state.ui.isLoading,
+    }
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -159,10 +173,13 @@ const styles = StyleSheet.create({
     },
     header: {
         color: "black",
+    },
+    progress: {
+        flexDirection: "row"
     }
 })
 
 export default connect(
-    null, 
+    mapStateToProps, 
     mapDispatchToProps
 )(SharePlace);

@@ -54,3 +54,4 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+/android/app/src/main/res/values/google_maps_api_key.xml

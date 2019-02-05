@@ -9,9 +9,9 @@ const PlaceList = (props) => {
             data={props.places}
             renderItem={(info) => (
                 <ListItem 
-                    placeName={info.item.name}
+                    placeName={info.item.placeName}
                     placeImage={info.item.image}
-                    onItemPressed={() => props.onItemSelected(info.item.key)} />
+                    onItemPressed={() => props.onItemSelected(info.item.id)} />
             )} 
         />
     );
