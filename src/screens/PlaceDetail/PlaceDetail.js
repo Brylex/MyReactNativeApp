@@ -15,7 +15,7 @@ class PlaceDetail extends Component {
     
     placeDeteledHandler = event => {
         if (event.buttonId === "delete-location-btn" && event.componentId === this.props.componentId) {
-            this.props.onDeletePlace(this.props.selectedPlace.key);
+            this.props.onDeletePlace(this.props.selectedPlace.id);
             Navigation.pop(this.props.componentId);
         }        
     }

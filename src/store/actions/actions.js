@@ -1,4 +1,4 @@
-import {SET_PLACES, ADD_PLACE} from './actionTypes';
+import {SET_PLACES, ADD_PLACE, DELETE_PLACE} from './actionTypes';
 import {uiStartLoading, uiStopLoading} from './ui';
 
 export const addPlace = (placeName, location, image) => {
@@ -68,6 +68,25 @@ export const getPlaces = () => {
                 })
             }
             dispatch(setPlaces(mappedPlaces))
+        });
+    }
+}
+
+export const deletePlace = id => {
+    return dispatch => {
+        fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places/" + id + ".json", {
+            method: "DELETE",
+        })
+        .catch(err => console.log(err))
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({
+                    type: DELETE_PLACE,
+                    id: id
+                })
+            } else {
+                console.log("Failed to delete record. Id: " + id);
+            }
         });
     }
 }
