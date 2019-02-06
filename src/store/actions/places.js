@@ -4,14 +4,21 @@ import {authGetToken} from './index';
 
 export const addPlace = (placeName, location, image) => {
     return dispatch => {
+        let idToken = null;
+
         dispatch(uiStartLoading());
         dispatch(authGetToken())
         .then(token => {
+            idToken = token;
+
             return fetch("https://us-central1-myreactnativeapp-1548941530901.cloudfunctions.net/storeImage", {
                 method: 'POST',
                 body: JSON.stringify({
                     image: image.base64
-                })
+                }),
+                headers: {
+                    authorization: "Bearer " + token
+                }
             })
         })        
         .catch(() => alert("No valid token found in store."))
@@ -20,13 +27,13 @@ export const addPlace = (placeName, location, image) => {
             uploadedImage = {
                 uri: parsedResponse.imageUrl
             };
-
+            console.log(parsedResponse);
             const placeData = {
                 placeName: placeName,
                 location: location,
                 image: parsedResponse.imageUrl
             }
-            return fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places.json", {
+            return fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places.json?auth=" + idToken, {
                 method: "POST",
                 body: JSON.stringify(placeData)
             })
