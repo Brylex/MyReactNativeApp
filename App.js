@@ -32,10 +32,14 @@ Navigation.registerComponent("myReactNativeApp.PlaceDetailsScreen", () => (props
     <PlaceDetail {...props} />
   </Provider>
 ), () => PlaceDetail);
-Navigation.registerComponent("myReactNativeApp.SideDrawerScreen", () => SideDrawer);
+Navigation.registerComponent("myReactNativeApp.SideDrawerScreen", () => (props) => (
+  <Provider store={store}>
+    <SideDrawer {...props} />
+  </Provider>
+), () => SideDrawer);
 
 //Start App
-Navigation.setRoot({
+export default () => Navigation.setRoot({
   root: {
     stack: {
       children: [{

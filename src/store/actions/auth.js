@@ -1,6 +1,7 @@
 import {AsyncStorage} from 'react-native'
+import App from '../../../App';
 
-import {AUTH_SET_TOKEN} from './actionTypes';
+import {AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN} from './actionTypes';
 import {uiStartLoading, uiStopLoading} from './index';
 import startTabs from '../../screens/MainTabs/startMainTabs';
 
@@ -51,18 +52,19 @@ export const tryAuth = (authData, authMode) => {
     }
 }
 
-export const authSetToken = (token) => {
+export const authSetToken = (token, expiryDate) => {
     return {
         type: AUTH_SET_TOKEN,
-        token: token
+        token: token,
+        expiryDate: expiryDate,
     }
 }
 
 export const authStoreToken = (token, expiresIn, refreshToken) => {
     return dispatch => {
-        dispatch(authSetToken(token));
         const now = new Date();
         const expiryDate = now.getTime() + expiresIn * 1000;
+        dispatch(authSetToken(token, expiryDate));
         AsyncStorage.setItem(authTokenExpiresInKey, expiryDate.toString());
         AsyncStorage.setItem(authTokenStorageKey, token);
         AsyncStorage.setItem(authRefreshTokenKey, refreshToken);
@@ -73,7 +75,8 @@ export const authGetToken = () => {
     return (dispatch, getState) => {
         const promise = new Promise((resolve, reject) => {
             let authToken = getState().auth.token;
-            if (!authToken) {
+            const expiryDate = getState().auth.expiryDate;
+            if (!authToken || new Date(expiryDate) <= new Date()) {
                 AsyncStorage.getItem(authTokenStorageKey)
                 .catch(err => reject())
                 .then(token => {
@@ -150,5 +153,22 @@ export const authClearStorage = () => {
     return dispatch => {
         AsyncStorage.removeItem(authTokenStorageKey);
         AsyncStorage.removeItem(authTokenExpiresInKey);
+        return AsyncStorage.removeItem(authRefreshTokenKey);
+    }
+}
+
+export const authLogout = () => {
+    return dispatch => {
+        dispatch(authClearStorage())
+        .then(() => {
+            App();
+        });        
+        dispatch(authRemoveToken())
+    }
+}
+
+export const authRemoveToken = () => {
+    return {
+        type: AUTH_REMOVE_TOKEN
     }
 }

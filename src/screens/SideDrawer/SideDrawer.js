@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import {View, StyleSheet, Platform} from 'react-native';
+import {connect} from 'react-redux';
+
+import {authLogout} from '../../store/actions/index'
 
 import SideMenuItem from '../../components/UI/SideMenuItem/SideMenuItem';
 
@@ -8,7 +11,7 @@ class SideDrawer extends Component {
         return (
             <View style={styles.container}>
                 <SideMenuItem 
-                    onPress={() => alert("Loggin out")} 
+                    onPress={this.props.onLogout} 
                     iconName={Platform.OS === 'android' ? "md-log-out" : "ios-log-out"}>
                     Log out
                 </SideMenuItem>
@@ -25,4 +28,14 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SideDrawer;
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogout: () => dispatch(authLogout()),
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)
+(SideDrawer);
