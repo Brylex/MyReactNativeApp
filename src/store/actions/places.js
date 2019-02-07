@@ -1,4 +1,4 @@
-import {SET_PLACES, ADD_PLACE, DELETE_PLACE} from './actionTypes';
+import {SET_PLACES, PLACE_ADDED, DELETE_PLACE, RESET_PLACE_ADDED_FLAG} from './actionTypes';
 import {uiStartLoading, uiStopLoading} from './ui';
 import {authGetToken} from './index';
 
@@ -31,8 +31,9 @@ export const addPlace = (placeName, location, image) => {
             const placeData = {
                 placeName: placeName,
                 location: location,
-                image: parsedResponse.imageUrl
-            }
+                image: parsedResponse.imageUrl,
+                imagePath: parsedResponse.imagePath,
+            };
             return fetch("https://myreactnativeapp-1548941530901.firebaseio.com/places.json?auth=" + idToken, {
                 method: "POST",
                 body: JSON.stringify(placeData)
@@ -47,12 +48,12 @@ export const addPlace = (placeName, location, image) => {
             console.log(json);
             dispatch(uiStopLoading());
             dispatch({
-                type: ADD_PLACE,
+                type: PLACE_ADDED,
                 id: json.name,
                 placeName: placeName,
                 location: location,
                 image: uploadedImage
-            });     
+            });
         })
         .catch(err => {
             console.log(err);
@@ -113,5 +114,11 @@ export const setPlaces = places => {
     return {
         type: SET_PLACES,
         places: places,
+    }
+}
+
+export const resetPlaceAddedFlag = () => {
+    return {
+        type: RESET_PLACE_ADDED_FLAG,
     }
 }

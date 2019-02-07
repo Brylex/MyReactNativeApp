@@ -1,7 +1,8 @@
-import {SET_PLACES, DELETE_PLACE, ADD_PLACE} from '../actions/actionTypes';
+import {SET_PLACES, DELETE_PLACE, PLACE_ADDED, RESET_PLACE_ADDED_FLAG} from '../actions/actionTypes';
 
 const initalState = {
-    places: []
+    places: [],
+    placeAdded: false,
 };
 
 const reducer = (state = initalState, action) => {
@@ -12,7 +13,7 @@ const reducer = (state = initalState, action) => {
                 places: action.places
             }
         }
-        case ADD_PLACE: {
+        case PLACE_ADDED: {
             return {
                 ...state,
                 places: state.places.concat({
@@ -20,9 +21,15 @@ const reducer = (state = initalState, action) => {
                     placeName: action.placeName,
                     image: action.image,
                     location: action.location,
-                })
+                }),
+                placeAdded: true,
             }
         }
+        case RESET_PLACE_ADDED_FLAG:
+            return {
+                ...state,
+                placeAdded: false,
+            }
         case DELETE_PLACE: {
             return {
                 ...state,

@@ -3,14 +3,8 @@ import {View, Button, StyleSheet, Dimensions} from 'react-native';
 import MapView from 'react-native-maps';
 
 class MapPicker extends Component {
-    state = {
-        location: {
-            latitude: 51.2472703,
-            longitude: 22.5667477,
-            latitudeDelta: 0.0122,
-            longitudeDelta: Dimensions.get('window').width / Dimensions.get('window').height * 0.0122,
-        },
-        showLocationMarker: false,
+    componentWillMount() {
+        this.reset();
     }
 
     pickLocationHandler = event => {
@@ -59,6 +53,18 @@ class MapPicker extends Component {
         );
     }
 
+    reset = () => {
+        this.setState({
+            location: {
+                latitude: 51.2472703,
+                longitude: 22.5667477,
+                latitudeDelta: 0.0122,
+                longitudeDelta: Dimensions.get('window').width / Dimensions.get('window').height * 0.0122,
+            },
+            showLocationMarker: false,
+        })
+    }
+
     render() {
         const marker = this.state.showLocationMarker
             ? <MapView.Marker coordinate={this.state.location} />
@@ -69,6 +75,7 @@ class MapPicker extends Component {
                 <MapView 
                     onPress={this.pickLocationHandler}
                     initialRegion={this.state.location}
+                    region={this.state.location}
                     style={styles.map}
                     ref={ref => this.map = ref}
                 >

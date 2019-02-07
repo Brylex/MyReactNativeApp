@@ -52,7 +52,8 @@ exports.storeImage = functions.https.onRequest((request, response) => {
                                 + "/o/" 
                                 + encodeURIComponent(file.name) 
                                 + "?alt=media&token=" 
-                                + uuid
+                                + uuid,
+                            imagePath: "/places/" + uuid + ".jpg",
                         });
                     } else {
                         console.log(err);
@@ -68,3 +69,15 @@ exports.storeImage = functions.https.onRequest((request, response) => {
             })
     })
 });
+
+exports.deleteImage = functions.database.ref("/places/{placeId}")
+    .onDelete((snapshot, context) => {
+        const placeData = snapshot.val();
+        const imagePath = placeData.imagePath;
+
+        const storage = new Storage({
+            projectId: "myreactnativeapp-1548941530901",
+        });
+        const bucket = storage.bucket("myreactnativeapp-1548941530901.appspot.com");
+        return bucket.file(imagePath).delete();
+    })

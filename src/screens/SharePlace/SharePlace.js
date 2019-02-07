@@ -3,7 +3,7 @@ import { ScrollView, View, Button, StyleSheet, ActivityIndicator, Text } from 'r
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation';
 
-import { addPlace } from '../../store/actions/index';
+import { addPlace, resetPlaceAddedFlag } from '../../store/actions/index';
 import PlaceInput from '../../components/PlaceInput/PlaceInput';
 import ImageSelector from '../../components/ImageSelector/ImageSelector';
 import MapPicker from '../../components/MapPicker/MapPicker';
@@ -14,29 +14,30 @@ import validate from '../../utility/validation';
 class SharePlace extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            controls: {
-                placeName: {
-                    value: "",
-                    valid: false,
-                    touched: false,
-                    validationRules: {
-                        notEmpty: true,
-                    }
-                },
-                location: {
-                    value: null,
-                    valid: false,
-                },
-                image: {
-                    value: null,
-                    valid: false,
-                }
-            }
-        }
 
         Navigation.events().registerNavigationButtonPressedListener(this.onNavigationButtonPressed);
         Navigation.events().registerComponentDidDisappearListener(this.onSideMenuClosed);
+        Navigation.events().registerBottomTabSelectedListener(this.tabSelected);
+    }
+
+    componentWillMount() {
+        this.reset();
+    }
+
+    componentDidUpdate() {
+        if (this.props.isPlaceAdded) {
+            Navigation.mergeOptions('MainTabLayout', {
+                bottomTabs: {
+                  currentTabIndex: 0
+                }
+              });
+        }
+    }
+
+    tabSelected = event => {
+        if (event.selectedTabIndex === 1) {
+            this.props.resetPlaceAddedFlag();
+        }
     }
 
     onNavigationButtonPressed = event => {
@@ -113,7 +114,33 @@ class SharePlace extends Component {
             this.state.controls.location.value,
             this.state.controls.image.value,
         );
+        this.reset();
+        this.imagePicker.reset();
+        this.locationPicker.reset();
     };
+
+    reset = () => {
+        this.setState({
+            controls: {
+                placeName: {
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                        notEmpty: true,
+                    }
+                },
+                location: {
+                    value: null,
+                    valid: false,
+                },
+                image: {
+                    value: null,
+                    valid: false,
+                }
+            }
+        })
+    }
 
     render() {
         const submitBtn = !this.props.isLoading
@@ -140,8 +167,12 @@ class SharePlace extends Component {
                         value={this.state.controls.placeName.value}
                         valid={this.state.controls.placeName.valid}
                         touched={this.state.controls.placeName.touched} />
-                    <ImageSelector onImagePicked={this.imagePickedHandler} />
-                    <MapPicker onLocationSelected={this.locationSelectedHandler}/>
+                    <ImageSelector 
+                        onImagePicked={this.imagePickedHandler}
+                        ref={ref => (this.imagePicker = ref)} />
+                    <MapPicker 
+                        onLocationSelected={this.locationSelectedHandler}
+                        ref={ref => (this.locationPicker = ref)} />
                     <View style={styles.button}>
                         {submitBtn}
                     </View>
@@ -153,13 +184,15 @@ class SharePlace extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image))
+        onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image)),
+        resetPlaceAddedFlag: () => dispatch(resetPlaceAddedFlag()),
     }
 }
 
 const mapStateToProps = state => {
     return {
         isLoading: state.ui.isLoading,
+        isPlaceAdded: state.places.placeAdded,
     }
 }
 

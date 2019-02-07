@@ -19,6 +19,7 @@ const startTabs = () => {
                     },
                     center: {
                         bottomTabs: {
+                            id: "MainTabLayout",
                             children: [{
                                     stack: { 
                                         children: [{

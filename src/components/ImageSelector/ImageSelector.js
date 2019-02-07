@@ -2,15 +2,17 @@ import React, {Component} from 'react';
 import {View, Image, Button, StyleSheet} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 
-import imagePlaceholder from '../../assets/bled.jpg';
-
 class ImageSelector extends Component {
     state = {
         pickedImage: null,
     }
 
     pickImageHandler = () => {
-        ImagePicker.showImagePicker({title: "Pick image!"}, 
+        ImagePicker.showImagePicker({
+            title: "Pick image!",
+            maxWidth: 800,
+            maxHeight: 600,
+        }, 
             response => {
                 if (response.didCancel) {
                     console.log("User canceled.");
@@ -27,6 +29,12 @@ class ImageSelector extends Component {
                 });
             }
         )
+    }
+
+    reset = () => {
+        this.setState({
+            pickedImage: null,
+        })
     }
     
     render() {
